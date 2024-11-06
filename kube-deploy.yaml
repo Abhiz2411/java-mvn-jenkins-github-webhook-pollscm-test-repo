@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tomcat-deployment
+spec:
+  replicas: 4  # Number of pod replicas
+  selector:
+    matchLabels:
+      app: tomcat-app
+  template:
+    metadata:
+      labels:
+        app: tomcat-app
+    spec:
+      containers:
+      - name: tomcat-container
+        image: abhiz2411/tomcat_web_img
+        ports:
+        - containerPort: 8080  # The port your application listens to inside the container
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tomcat-service
+spec:
+  type: NodePort  # Exposes the service externally
+  selector:
+    app: tomcat-app
+  ports:
+  - port: 8080  # The port accessible inside the cluster
+    targetPort: 8080  # The port your application listens on within the container
+    nodePort: 30080   # Port exposed externally (use any available port in 30000–32767)
